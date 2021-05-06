@@ -15,13 +15,13 @@ const close = async () => {
 };
 
 const write = async (table, fields, rows) => {
-  debugger;
+  // debugger;
 
   const time1 = new Date();
   const fieldsStr = fields.join(',');
   let i = 0;
   const rowsPerQuery = 1000;
-  debugger;
+  // debugger;
   while (i < rows.length) {
     const vals = [];
     let index = 1;
@@ -46,12 +46,12 @@ const write = async (table, fields, rows) => {
     }
     const queryStr = `insert into ${table} (${fieldsStr}) values ${indexStrs.join(',')}`;
     // console.log(queryStr, vals, '\n\n\n\n');
-    debugger;
+    // debugger;
     const res = await client.query(queryStr, vals);
   }
 
   const time2 = new Date();
-  console.log(`Time to write records to DB: ${(time2 - time1) / 1000}`)
+  // console.log(`Time to write records to DB: ${(time2 - time1) / 1000}`)
 };
 
 /*

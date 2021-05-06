@@ -97,6 +97,23 @@ test('""', ['']);
 test('"just,one,item"', ['just,one,item']);
  */
 
+class LogUpdate {
+  constructor(interval) {
+    this.startTime = new Date();
+    this.lastTime = this.startTime;
+    this.interval = interval;
+  }
+
+  log(...args) {
+    if (new Date() - this.lastTime >= this.interval) {
+      console.log(...args);
+      this.lastTime = new Date();
+    }
+  }
+}
+
+const logUpdate = new LogUpdate(1000);
+
 const queue = [];
 const rowsPerQuery = 100;
 
@@ -113,7 +130,11 @@ const addToQueue = async (data) => {
   }
 }
 
+let linesDone = 0;
+
 const handleLine = async (line) => {
+  linesDone++;
+
   const data = splitCsvLine(line);
 
   let id, name, slogan, description, category, default_price;
@@ -135,6 +156,7 @@ const handleLine = async (line) => {
   default_price = cleanPrice(default_price);
 
   await addToQueue([id, name, slogan, description, category, default_price]);
+  logUpdate.log('Lines done:', linesDone);
 
   return true;
 }
@@ -145,15 +167,15 @@ const main = async () => {
   const t1 = new Date();
   let result = await processLineByLine(filename, handleLine);
   debugger;
-  flushQueue();
+  await flushQueue();
   const t2 = new Date();
   console.log('result', result);
   console.log(`Run time: ${(t2 - t1) / 1000} seconds.`);
 };
 
 main()
-  .catch(console.log)
-  .finally(() => {
-    console.log('Closing DB');
-    db.close();
+  .catch(err => console.log('main.catch caught error:', err))
+  .finally(async () => {
+    await db.close();
+    console.log('DB closed.');
   });
