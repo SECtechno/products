@@ -1,7 +1,12 @@
 const readline = require('readline');
 const fs = require('fs');
+const db = require('./db.js');
 
 const filename = '../rawdata/product.csv';
+
+const database = 'test';
+const table = 'product';
+const fields = 'id,name,slogan,description,category,default_price'.split(',');
 
 async function processLineByLine(filename, handleLine) {
   const fileStream = fs.createReadStream(filename);
@@ -9,8 +14,13 @@ async function processLineByLine(filename, handleLine) {
     input: fileStream,
     crlfDelay: Infinity
   });
+  let linesToHandle = Infinity;
   for await (const line of rl) {
-    if (!handleLine(line)) {
+    if (!(await handleLine(line))) {
+      break;
+    }
+    // console.log('line handled');
+    if (linesToHandle-- <= 0) {
       break;
     }
   }
@@ -18,9 +28,7 @@ async function processLineByLine(filename, handleLine) {
 }
 
 const isNum = s => !Number.isNaN(Number(s));
-
 const last = arr => arr[arr.length - 1];
-
 const isCategory = s => {
   if (s.split(' ').length > 2) {
     return false;
@@ -29,15 +37,14 @@ const isCategory = s => {
     return false;
   }
   return true;
-}
-
+};
 const isPrice = s => {
   const re = /^"?\$?([0-9. ]+)"?$/
   let exec = re.exec(s);
   if (exec === null) { return false; }
   return isNum(exec[1]);
-}
-
+};
+const cleanPrice = s => /([0-9.]+)/.exec(s)[0];
 const splitCsvLine = (line) => {
   const res = [];
   let i = 0;
@@ -69,8 +76,7 @@ const splitCsvLine = (line) => {
     }
   }
   return res;
-}
-
+};
 /*
 // Test splitScvLine
 const test = (input, expected) => {
@@ -91,7 +97,23 @@ test('""', ['']);
 test('"just,one,item"', ['just,one,item']);
  */
 
-const handleLine = (line) => {
+const queue = [];
+const rowsPerQuery = 100;
+
+const flushQueue = async () => {
+  // console.log('about to flush queue:', queue.map(row => row[0]).join(','));
+  await db.write(table, fields, queue);
+  queue.length = 0;
+};
+
+const addToQueue = async (data) => {
+  queue.push(data);
+  if (queue.length >= rowsPerQuery) {
+    await flushQueue(queue);
+  }
+}
+
+const handleLine = async (line) => {
   const data = splitCsvLine(line);
 
   let id, name, slogan, description, category, default_price;
@@ -100,20 +122,38 @@ const handleLine = (line) => {
     [id, name, slogan, description, category, default_price] = data;
   } else if (data.length === 5) {
     [id, name, description, category, default_price] = data;
+    slogan = '';
   } else {
     console.log(line);
+    return true;
   }
+
+  if (id === 'id') {
+    return true;
+  }
+
+  default_price = cleanPrice(default_price);
+
+  await addToQueue([id, name, slogan, description, category, default_price]);
 
   return true;
 }
 
 
 const main = async () => {
+  await db.init('test');
   const t1 = new Date();
   let result = await processLineByLine(filename, handleLine);
+  debugger;
+  flushQueue();
   const t2 = new Date();
   console.log('result', result);
   console.log(`Run time: ${(t2 - t1) / 1000} seconds.`);
 };
 
-main();
+main()
+  .catch(console.log)
+  .finally(() => {
+    console.log('Closing DB');
+    db.close();
+  });
