@@ -56,7 +56,7 @@ class Db {
           console.error('fields:', this._fields);
           throw 'Row length doesn\'t match fields length';
         }
-        vals.push(...rows[i].map(x => x.toString()));
+        vals.push(...rows[i].map(x => x === null ? null : x.toString()));
         const indexes = [];
         for (let k = 0; k < rows[i].length; k++) {
           indexes.push(index++);
@@ -67,7 +67,10 @@ class Db {
           break;
         }
       }
-      const queryStr = `insert into ${this._table} (${fieldsStr}) values ${indexStrs.join(',')}`;
+      const queryStr = `
+        insert into ${this._table} (${fieldsStr}) values ${indexStrs.join(',')}
+        `;
+      // console.log(rows.map(x => x[1]));
       const res = await this.client.query(queryStr, vals);
     }
 
@@ -76,3 +79,7 @@ class Db {
 }
 
 module.exports = Db;
+
+
+// disable foreign key checkign:
+// SET session_replication_role = 'replica';

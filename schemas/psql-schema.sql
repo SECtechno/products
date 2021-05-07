@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS product;
-CREATE TABLE product (
-  id SERIAL PRIMARY KEY,
+DROP TABLE IF EXISTS products;
+CREATE TABLE products (
+  id INTEGER PRIMARY KEY,
   name TEXT,
   slogan TEXT,
   description TEXT,
@@ -8,53 +8,49 @@ CREATE TABLE product (
   default_price DECIMAL
 );
 
-DROP TABLE IF EXISTS style;
-CREATE TABLE style (
-  id SERIAL PRIMARY KEY,
+DROP TABLE IF EXISTS styles;
+CREATE TABLE styles (
+  id INTEGER PRIMARY KEY,
   id_product INTEGER,
-  name VARCHAR,
+  name TEXT,
   original_price DECIMAL,
-  sale_price DECIMAL NULL DEFAULT NULL,
-  default? bit NULL DEFAULT 0,
-  PRIMARY KEY (id)
+  sale_price DECIMAL,
+  is_default BOOL NULL DEFAULT FALSE
 );
-ALTER TABLE style ADD FOREIGN KEY (id_product) REFERENCES product (id);
+ALTER TABLE styles ADD FOREIGN KEY (id_product) REFERENCES products (id);
 
-DROP TABLE IF EXISTS feature;
-CREATE TABLE feature (
-  id SERIAL PRIMARY KEY,
+DROP TABLE IF EXISTS features;
+CREATE TABLE features (
+  id INTEGER PRIMARY KEY,
   id_product INTEGER,
-  feature MEDIUMTEXT,
-  value MEDIUMTEXT NULL DEFAULT NULL,
-  PRIMARY KEY (id)
+  feature TEXT,
+  value TEXT NULL DEFAULT NULL
 );
-ALTER TABLE feature ADD FOREIGN KEY (id_product) REFERENCES product (id);
+ALTER TABLE features ADD FOREIGN KEY (id_product) REFERENCES products (id);
 
-CREATE TABLE photo (
-  id SERIAL PRIMARY KEY,
+DROP TABLE IF EXISTS photos;
+CREATE TABLE photos (
+  id INTEGER PRIMARY KEY,
   id_style INTEGER,
-  thumbnail_url VARCHAR,
-  url VARCHAR,
-  PRIMARY KEY (id)
+  thumbnail_url TEXT,
+  url TEXT
 );
-ALTER TABLE photo ADD FOREIGN KEY (id_style) REFERENCES style (id);
+ALTER TABLE photos ADD FOREIGN KEY (id_style) REFERENCES styles (id);
 
-CREATE TABLE sku (
-  id SERIAL PRIMARY KEY,
+DROP TABLE IF EXISTS skus;
+CREATE TABLE skus (
+  id INTEGER PRIMARY KEY,
   id_style INTEGER,
-  sku_no INTEGER,
   quantity INTEGER,
-  size VARCHAR,
-  PRIMARY KEY (id)
+  size TEXT
 );
-ALTER TABLE sku ADD FOREIGN KEY (id_style) REFERENCES style (id);
+ALTER TABLE skus ADD FOREIGN KEY (id_style) REFERENCES styles (id);
 
 DROP TABLE IF EXISTS related;
 CREATE TABLE related (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   id_product1 INTEGER,
-  id_product2 INTEGER,
-  PRIMARY KEY (id)
+  id_product2 INTEGER
 );
-ALTER TABLE related ADD FOREIGN KEY (id_product1) REFERENCES product (id);
-ALTER TABLE related ADD FOREIGN KEY (id_product2) REFERENCES product (id);
+ALTER TABLE related ADD FOREIGN KEY (id_product1) REFERENCES products (id);
+ALTER TABLE related ADD FOREIGN KEY (id_product2) REFERENCES products (id);

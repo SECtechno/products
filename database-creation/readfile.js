@@ -23,7 +23,7 @@ async function processLineByLine(filename, handleLine, linesToHandle = Infinity)
     crlfDelay: Infinity
   });
 
-  const logUpdate = new LogUpdate(2);
+  const logUpdate = new LogUpdate(1);
 
   let linesDone = 0;
 
