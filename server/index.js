@@ -52,13 +52,8 @@ app.get('/products/:product_id', (req, res) => {
     .catch(apiError(res));
 });
 
-const fromObj = (obj, ...keys) => {
-  return Object.fromEntries(keys.map(key => [key, obj[key]]));
-
-  // const res = {};
-  // for (const key of keys) { res[[key]] = obj[key]; }
-  // return res;
-}
+const fromObj = (obj, ...keys) =>
+  Object.fromEntries(keys.map(key => [key, obj[key]]));
 
 app.get('/products/:product_id/styles', (req, res) => {
   const id = req.params.product_id;
@@ -98,7 +93,17 @@ app.get('/products/:product_id/styles', (req, res) => {
     .catch(apiError(res));
 });
 
-app.get('/products/:product_id/related', (req, res) => { });
+app.get('/products/:product_id/related', (req, res) => {
+  const id = req.params.product_id;
+  client.query('SELECT * FROM related WHERE id_product1 = $1', [id])
+    .then(relatedData => {
+      const related = relatedData.rows.map(row => row.id_product2);
+      console.log('RELATED', related);
+      res.send(related);
+    })
+    .catch(apiError(res));
+
+});
 
 const apiError = res => error => {
   console.error('ERROR:', error);
