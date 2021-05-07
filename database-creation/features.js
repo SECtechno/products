@@ -3,7 +3,7 @@ const { processLineByLine } = require('./readfile.js');
 const { isNum, last, isCategory, isPrice, cleanPrice } = require('./utils.js');
 
 const filename = '../rawdata/features.csv';
-const database = 'test';
+const database = 'products';
 const table = 'features';
 const fields = 'id id_product feature value'.split(' ');
 
@@ -39,3 +39,7 @@ const main = async () => {
 }
 
 main();
+
+// select count(*) from features f WHERE NOT EXISTS (SELECT * FROM products p WHERE p.id = f.id_product);
+
+// delete from features f WHERE NOT EXISTS (SELECT * FROM products p WHERE p.id = f.id_product);
