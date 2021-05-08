@@ -18,7 +18,7 @@ module.exports = (req, res) => {
       data.test = 'TEST';
       // console.log(data);
       res.send(data);
-      console.log(`product details sent.`);
+      console.log(`product details sent for product ${id}`);
     })
     .catch(apiError(res));
 }
