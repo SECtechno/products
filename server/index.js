@@ -28,7 +28,6 @@ app.get('/products', (req, res) => {
       console.log(`${count} products returned.`)
     })
     .catch(apiError(res));
-
 });
 
 app.get('/products/:product_id', (req, res) => {
@@ -85,10 +84,10 @@ app.get('/products/:product_id/styles', (req, res) => {
 
           const result = { product_id: id, results: Object.values(styles) };
           console.log('STYLES', JSON.stringify(result, null, 2));
-          res.send('STUFF');
+          res.send(result);
 
         })
-        .catch(apiError(res));
+        // .catch(apiError(res));
     })
     .catch(apiError(res));
 });
@@ -102,7 +101,6 @@ app.get('/products/:product_id/related', (req, res) => {
       res.send(related);
     })
     .catch(apiError(res));
-
 });
 
 const apiError = res => error => {
