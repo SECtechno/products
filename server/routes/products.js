@@ -10,6 +10,7 @@ module.exports = (req, res) => {
 
   client.query('SELECT * FROM products LIMIT $1 OFFSET $2', [count, offset])
     .then(data => {
+      res.setHeader('content-type', 'application/json');
       res.send(data.rows);
       console.log(`${count} products returned.`)
     })
