@@ -1,0 +1,30 @@
+GET /products
+in: # range of products
+out: 
+[
+  {id, name, slogan, description, category, default_price}
+]
+
+
+GET /products/:product_id
+in: product_id
+out: {id, name, slogan, description, category, default_price, 
+	features: [{feature, value]}
+
+
+GET /products/:product_id/styles
+in: product_id
+out: 
+{
+  product_id, 
+  results: [
+    {style_id, name, original_price, ?sale_price, "default?", 
+     photos: [{thumbnail_url, url}],
+     skus: {[sku_no]: {quantity, size} }
+    }
+  ]
+}
+
+GET /products/:product_id/related
+in: product_id
+out: [product_id]
