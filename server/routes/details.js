@@ -16,7 +16,7 @@ module.exports = (req, res) => {
       });
       data.features = features;
       data.test = 'TEST';
-      console.log(data);
+      // console.log(data);
       res.send(data);
       console.log(`product details sent.`);
     })

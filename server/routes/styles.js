@@ -33,7 +33,7 @@ module.exports = (req, res) => {
             styles[photo.id_style].photos.push(fromObj(photo, 'url', 'thumbnail_url')));
 
           const result = { product_id: id, results: Object.values(styles) };
-          console.log('STYLES', JSON.stringify(result, null, 2));
+          // console.log('STYLES', JSON.stringify(result, null, 2));
           res.send(result);
 
         })
