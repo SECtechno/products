@@ -4,3 +4,7 @@ node_modules/
 package-lock.json
 project notes.txt
 .project notes.txt.swp
+db_image
+ssh-aws-1.sh
+aws-key.pem
+project\ notes.txt*

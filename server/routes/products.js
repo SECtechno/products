@@ -8,7 +8,8 @@ module.exports = (req, res) => {
 
   const offset = (page - 1) * count;
 
-  client.query('SELECT * FROM products LIMIT $1 OFFSET $2', [count, offset])
+  client.query('SELECT * FROM products ORDER BY products_pkey LIMIT $1 OFFSET $2', [count, offset])
+  // client.query('SELECT * FROM products LIMIT $1 OFFSET $2', [count, offset])
     .then(data => {
       res.setHeader('content-type', 'application/json');
       res.send(data.rows);

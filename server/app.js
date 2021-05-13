@@ -3,8 +3,9 @@ const express = require('express');
 const app = express();
 
 app.get('/test', (req, res) => {
-  console.log('Waiting 4 seconds...');
-  setTimeout(() => res.send('test result'), 4000);
+  console.log('Test route');
+  const toneRow = [...new Array(12)].map((_, i) => [Math.random(), i]).sort().map(x => x[1]).join(' ') + '\n';
+  res.send(toneRow);
 });
 
 app.get('/products', require('./routes/products.js'));
