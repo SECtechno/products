@@ -4,5 +4,4 @@ WORKDIR /app
 COPY . /app
 RUN npm install
 EXPOSE 3000
-EXPOSE 5432
 CMD ["npm", "start"]

@@ -1,0 +1,27 @@
+version: '3'
+services:
+  db:
+    image: "postgres" 
+    ports: 
+      - 5432
+    env_file:
+      - database.env 
+    volumes:
+      - db-data:/var/lib/postgresql/data/ 
+
+  web:
+    build: ./
+    ports:
+      - 3000:3000
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      SEQ_DB: products
+      SEQ_USER: postgres
+      SEQ_PW: postgres
+      DATABASE_URL: postgres://postgres:postgres@db:5432/products
+
+volumes:
+  db-data: 

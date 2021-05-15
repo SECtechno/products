@@ -5,6 +5,6 @@ package-lock.json
 project notes.txt
 .project notes.txt.swp
 db_image
-ssh-aws-1.sh
+ssh-aws*.sh
 aws-key.pem
 project\ notes.txt*
