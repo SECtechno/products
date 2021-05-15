@@ -1,17 +1,19 @@
 // const client = require('../db.js');
 const apiError = require('../error.js');
 
-const { Pool } = require('pg');
+const pool = require('../db.js');
 
-const pool = new Pool({
-  host: 'localhost',
-  database: 'products',
-  user: 'postgres',
-  password: 'postgres',
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-})
+// const { Pool } = require('pg');
+
+// const pool = new Pool({
+//   host: 'localhost',
+//   database: 'products',
+//   user: 'postgres',
+//   password: 'postgres',
+//   max: 20,
+//   idleTimeoutMillis: 30000,
+//   connectionTimeoutMillis: 2000,
+// })
 
 
 module.exports = (req, res) => {
